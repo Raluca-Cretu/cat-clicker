@@ -3,6 +3,7 @@
 
 var model = {
     currentCat: null,
+    form: false,
     cats: [
         {
             clickCount : 0,
@@ -68,6 +69,27 @@ var octopus = {
     incrementCounter: function() {
         model.currentCat.clickCount++;
         catView.render();
+    },
+
+    openAdminView: function() {
+        if (model.form === false) {
+            model.form.style.display = 'block';
+            model.form = true;
+            adminView.init();
+        }
+
+    },
+
+    closeAdminView: function() {
+        if (model.form === true) {
+            model.form.style.display = 'none';
+            model.form = false;
+            adminView.init();
+        }
+    },
+
+    updateCatValues: function() {
+        adminView.render();
     }
 };
 
@@ -142,6 +164,43 @@ var catListView = {
             this.catListElem.appendChild(elem);
         }
     }
+};
+
+
+var adminView = {
+    init: function() {
+        var form = document.getElementById('form');
+        this.inputName = document.getElementById('inputName');
+        this.inputUrl = document.getElementById('inputUrl');
+        this.inputCount = document.getElementById('inputCount');
+        this.cancelBtn = document.getElementById('cancelBtn');
+        this.saveBtn = document.getElementById('cancelBtn');
+        this.adminBtn = document.getElementById('adminBtn');
+
+
+
+        this.adminBtn.addEventListener('click', function(){ //shows the admin display.
+            octopus.openAdminView();
+        });
+
+        this.cancelBtn.addEventListener('click', function() {
+            octopus.closeAdminView();
+        });
+
+        this.saveBtn.addEventListener('click', function() {
+            octopus.updateCatValues();
+        });
+
+        this.render();
+    },
+
+    render: function() {
+        // update the DOM elements with values from the current cat
+        var currentCat = octopus.getCurrentCat();
+        this.inputName.value = currentCat.name;
+        this.inputUrl.value = currentCat.imgAttribution;
+        this.inputCount.value = currentCat.clickCount;
+    },
 };
 
 // make it go!
